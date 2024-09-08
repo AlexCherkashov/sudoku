@@ -26,8 +26,8 @@
         <td 
           v-for="(cell, cellIndex) in row" 
           :key="cellIndex"
-          :class="{ backlight: cellIndex === selectedCell.y }"
-          @click="cellClick(rowIndex, cellIndex)">
+          :class="{ backlight: cellIndex === selectedCell.y, 'backlight-number': cell == selectedCell.value }"
+          @click="cellClick(rowIndex, cellIndex, cell)">
           {{ cell }}
         </td>
       </tr>
@@ -66,8 +66,8 @@ function generateSudoku(hiddenCellsCount) {
   tableRef.value = hideCells(table, hiddenCellsCount);
 }
 
-function cellClick(x, y) {
-  selectedCell.value = {x, y};
+function cellClick(x, y, value) {
+  selectedCell.value = {x, y, value};
 }
 
 </script>
@@ -81,6 +81,9 @@ function cellClick(x, y) {
 
   .backlight {
     background-color: #04aa6d3b;
+  }
+  .backlight-number {
+    font-weight: 600;
   }
 
   button {
