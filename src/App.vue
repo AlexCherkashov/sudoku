@@ -26,13 +26,23 @@
         <td 
           v-for="(cell, cellIndex) in row" 
           :key="cellIndex"
-          :class="{ backlight: cellIndex === selectedCell.y, 'backlight-number': cell == selectedCell.value }"
+          :class="{ 
+            backlight: cellIndex === selectedCell.y, 
+            'backlight-number': cell.value == selectedCell.value,
+            'error-cell': cell.error
+          }"
           @click="cellClick(rowIndex, cellIndex, cell)">
-          {{ cell }}
+          {{ cell.value }}
         </td>
       </tr>
     </tbody>
   </table>
+  <input 
+    ref="inputCell" 
+    type="text" 
+    style="position: absolute; top: -50px" 
+    @keyup="inputValue"
+  />
 </template>
 
 <script setup>
@@ -45,6 +55,8 @@ import { hideCells } from './helpers/operations';
 
 const tableRef = ref([]);
 const selectedCell = ref({});
+const inputCell = ref();
+let answer = [];
 
 function getInitializedTable() {
   const table = [];
@@ -58,16 +70,33 @@ function getInitializedTable() {
 }
 
 function generateSudoku(hiddenCellsCount) {
+  selectedCell.value = {};
   let table = getInitializedTable();
   for (let i = 0; i < GENERATE_REPEAT; i++) {
     const operation = getRandomFromArray(Object.values(OPERATIONS));
     table = operation(table);
   }
+  answer = structuredClone(table);
   tableRef.value = hideCells(table, hiddenCellsCount);
 }
 
-function cellClick(x, y, value) {
-  selectedCell.value = {x, y, value};
+function cellClick(x, y, cell) {
+  selectedCell.value = {x, y, value: cell.value};
+  if (cell.isEntered || cell.error) {
+    inputCell.value.focus();
+  }
+}
+
+function inputValue(event) {
+  const inputNumber = +event.key;
+  const {x, y} = selectedCell.value;
+  if (inputNumber && inputNumber > 0 && inputNumber <= TABLE_SIZE) {
+    tableRef.value[x][y].value = inputNumber;
+    tableRef.value[x][y].error = answer[x][y] !== inputNumber;
+    selectedCell.value.value = inputNumber;
+  } else if (event.code === 'Backspace'){
+    tableRef.value[x][y].value = null;
+  }
 }
 
 </script>
@@ -77,6 +106,17 @@ function cellClick(x, y, value) {
     display: flex;
     flex-direction: column;
     align-items: center;
+  }
+
+  .cell-input {
+    width: 100%;
+    height: 100%;
+    border: 0;
+    padding: 0;
+    background-color: #00000000;
+  }
+  .error-cell {
+    color: red;
   }
 
   .backlight {
@@ -106,10 +146,10 @@ function cellClick(x, y, value) {
     border-collapse: collapse;
   }
   td {
+    font-size: 20px;
     border: 1px solid #999999;
-    padding: 4px;
-    width: 25px;
-    height: 25px;
+    width: 40px;
+    height: 40px;
     text-align: center;
   }
   td:nth-child(3n) {

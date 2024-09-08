@@ -46,5 +46,15 @@ export function hideCells(table, cellsCount) {
       i--;
     }
   }
+
+  for (let i = 0; i < TABLE_SIZE; i++) {
+    for (let j = 0; j < TABLE_SIZE; j++) {
+      table[i][j] = {
+        isEntered: !table[i][j],
+        value: table[i][j],
+      };
+    }
+  }
+
   return table;
 }
