@@ -20,11 +20,14 @@
   <table>
     <tbody>
       <tr 
-        v-for="(row, index) in tableRef" 
-        :key="index">
+        v-for="(row, rowIndex) in tableRef" 
+        :key="rowIndex"
+        :class="{ backlight: rowIndex === selectedCell.x }">
         <td 
-          v-for="(cell, i) in row" 
-          :key="i">
+          v-for="(cell, cellIndex) in row" 
+          :key="cellIndex"
+          :class="{ backlight: cellIndex === selectedCell.y }"
+          @click="cellClick(rowIndex, cellIndex)">
           {{ cell }}
         </td>
       </tr>
@@ -41,6 +44,7 @@ import { getRandomFromArray } from './helpers/math-helper';
 import { hideCells } from './helpers/operations';
 
 const tableRef = ref([]);
+const selectedCell = ref({});
 
 function getInitializedTable() {
   const table = [];
@@ -62,6 +66,10 @@ function generateSudoku(hiddenCellsCount) {
   tableRef.value = hideCells(table, hiddenCellsCount);
 }
 
+function cellClick(x, y) {
+  selectedCell.value = {x, y};
+}
+
 </script>
 <style>
   #app {
@@ -69,6 +77,10 @@ function generateSudoku(hiddenCellsCount) {
     display: flex;
     flex-direction: column;
     align-items: center;
+  }
+
+  .backlight {
+    background-color: #04aa6d3b;
   }
 
   button {
@@ -89,10 +101,9 @@ function generateSudoku(hiddenCellsCount) {
 
   table {
     border-collapse: collapse;
-    font: Roboto;
   }
   td {
-    border: 1px solid #dddddd;
+    border: 1px solid #999999;
     padding: 4px;
     width: 25px;
     height: 25px;
