@@ -28,7 +28,7 @@
           :key="cellIndex"
           :class="{ 
             backlight: cellIndex === selectedCell.y, 
-            'backlight-number': cell.value == selectedCell.value,
+            'backlight-number': cell.value && cell.value == selectedCell.value,
             'error-cell': cell.error
           }"
           @click="cellClick(rowIndex, cellIndex, cell)">
@@ -115,15 +115,18 @@ function inputValue(event) {
     padding: 0;
     background-color: #00000000;
   }
-  .error-cell {
-    color: red;
-  }
 
   .backlight {
     background-color: #04aa6d3b;
   }
   .backlight-number {
     font-weight: 600;
+    background-color: #04aa6d6e;
+  }
+  
+  .error-cell {
+    background-color: #ff000052;
+    color: red;
   }
 
   button {
