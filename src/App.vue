@@ -29,7 +29,7 @@
           :class="{ 
             backlight: cellIndex === selectedCell.y, 
             'backlight-number': cell.value && cell.value == selectedCell.value,
-            'error-cell': cell.error
+            'error-cell': cell.value && answer[rowIndex][cellIndex] !== cell.value,
           }"
           @click="cellClick(rowIndex, cellIndex, cell)">
           {{ cell.value }}
@@ -81,8 +81,8 @@ function generateSudoku(hiddenCellsCount) {
 }
 
 function cellClick(x, y, cell) {
-  selectedCell.value = {x, y, value: cell.value};
-  if (cell.isEntered || cell.error) {
+  selectedCell.value = { x, y, value: cell.value };
+  if (cell.isEntered) {
     inputCell.value.focus();
   }
 }
@@ -92,7 +92,6 @@ function inputValue(event) {
   const {x, y} = selectedCell.value;
   if (inputNumber && inputNumber > 0 && inputNumber <= TABLE_SIZE) {
     tableRef.value[x][y].value = inputNumber;
-    tableRef.value[x][y].error = answer[x][y] !== inputNumber;
     selectedCell.value.value = inputNumber;
   } else if (event.code === 'Backspace'){
     tableRef.value[x][y].value = null;
