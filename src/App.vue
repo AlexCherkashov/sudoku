@@ -5,15 +5,15 @@
       margin-bottom: 8px; 
       gap: 8px;">
     <button
-      @click="generateSudoku(LEVELS.EASY)">
+      @click="generateSudoku(CELLS_TO_HIDE.EASY)">
       Лёгкий
     </button>
     <button
-      @click="generateSudoku(LEVELS.NORMAL)">
+      @click="generateSudoku(CELLS_TO_HIDE.NORMAL)">
       Средний
     </button>
     <button
-      @click="generateSudoku(LEVELS.HARD)">
+      @click="generateSudoku(CELLS_TO_HIDE.HARD)">
       Сложный
     </button>
   </div>
@@ -48,7 +48,7 @@
 <script setup>
 import { ref, computed } from 'vue';
 import { TABLE_SIZE, CUBE_SIZE } from './constants/table-size';
-import LEVELS from './constants/levels';
+import CELLS_TO_HIDE from './constants/cells-to-hide';
 import { GENERATE_REPEAT, OPERATIONS } from './constants/generate-options';
 import { getRandomFromArray } from './helpers/math-helper';
 import { hideCells } from './helpers/operations';
@@ -71,12 +71,14 @@ const initializedTable = computed(() => {
 
 function generateSudoku(hiddenCellsCount) {
   selectedCell.value = {};
+
   let table = initializedTable.value;
   const operations = Object.values(OPERATIONS);
   for (let i = 0; i < GENERATE_REPEAT; i++) {
     const operation = getRandomFromArray(operations);
     table = operation(table);
   }
+  
   answer = structuredClone(table);
   tableRef.value = hideCells(table, hiddenCellsCount);
 }
