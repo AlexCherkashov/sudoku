@@ -46,7 +46,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import { TABLE_SIZE, CUBE_SIZE } from './constants/table-size';
 import LEVELS from './constants/levels';
 import { GENERATE_REPEAT, OPERATIONS } from './constants/generate-options';
@@ -58,7 +58,7 @@ const selectedCell = ref({});
 const inputCell = ref();
 let answer = [];
 
-function getInitializedTable() {
+const initializedTable = computed(() => {
   const table = [];
   for (let i = 0; i < TABLE_SIZE; i ++) {
     table[i] = [];
@@ -67,13 +67,14 @@ function getInitializedTable() {
     }
   }
   return table;
-}
+})
 
 function generateSudoku(hiddenCellsCount) {
   selectedCell.value = {};
-  let table = getInitializedTable();
+  let table = initializedTable.value;
+  const operations = Object.values(OPERATIONS);
   for (let i = 0; i < GENERATE_REPEAT; i++) {
-    const operation = getRandomFromArray(Object.values(OPERATIONS));
+    const operation = getRandomFromArray(operations);
     table = operation(table);
   }
   answer = structuredClone(table);
