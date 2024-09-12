@@ -37,22 +37,26 @@ export function swapRows(table) {
 }
 
 export function hideCells(table, cellsCount) {
-  for (let i = 0; i < cellsCount; i++) {
-    const x = getRandomInt(0, TABLE_SIZE);
-    const y = getRandomInt(0, TABLE_SIZE);
-    if (table[x][y]) {
-      table[x][y] = null;
-    } else {
-      i--;
-    }
-  }
-
   for (let i = 0; i < TABLE_SIZE; i++) {
     for (let j = 0; j < TABLE_SIZE; j++) {
       table[i][j] = {
-        isEntered: !table[i][j],
+        isEntered: false,
         value: table[i][j],
       };
+    }
+  }
+
+  for (let i = 0; i < cellsCount; i++) {
+    const x = getRandomInt(0, TABLE_SIZE);
+    const y = getRandomInt(0, TABLE_SIZE);
+
+    if (table[x][y].value) {
+      table[x][y] = {
+        isEntered: true,
+        value: null,
+      };
+    } else {
+      i--;
     }
   }
 
